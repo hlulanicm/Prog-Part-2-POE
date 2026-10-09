@@ -1,0 +1,12 @@
+﻿namespace API_Proj.Models
+{
+    public class RegisterDto
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string UserSurname { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Role { get; set; } = "Participant";
+        public string? PhoneNumber { get; set; }
+    }
+}
