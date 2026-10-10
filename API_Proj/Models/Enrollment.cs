@@ -11,6 +11,7 @@ namespace API_proj.Models
 
         public int ParticipantID { get; set; }
 
+
         public int CategoryID { get; set; }
 
         [Required, StringLength(20)]
