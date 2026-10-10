@@ -1,13 +1,12 @@
 ﻿using API_proj.Data;
 using API_proj.Models;
-using API_Proj.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace API_Proj.Controllers
+namespace API_proj.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -20,7 +19,10 @@ namespace API_Proj.Controllers
             _context = context;
         }
 
+        /// <summary>Registers a new Organiser or Participant account.</summary>
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             if (dto.Role != "Organiser" && dto.Role != "Participant")
@@ -55,7 +57,10 @@ namespace API_Proj.Controllers
             });
         }
 
+        /// <summary>Logs in with email and password and sets the session cookie.</summary>
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var email = dto.Email.Trim().ToLower();
@@ -79,7 +84,9 @@ namespace API_Proj.Controllers
             return Ok(new { user.UserID, user.UserName, user.Role });
         }
 
+        /// <summary>Logs out the current user and clears the session cookie.</summary>
         [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

@@ -1,5 +1,5 @@
 ﻿using API_proj.Data;
-using API_Proj.Models;
+using API_proj.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Proj.Controllers

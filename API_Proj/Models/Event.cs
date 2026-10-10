@@ -1,14 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace API_Proj.Models
+namespace API_proj.Models
 {
     public class Event
     {
         [Key]
         public int EventID { get; set; }
 
-        ///Id of the Organiser (User) who created the event.Will be Set by the server, never by the client.
+       
         public int OrganiserID { get; set; }
+
+     
+        public int? CategoryID { get; set; }
 
         [Required, StringLength(100)]
         public string Name { get; set; } = string.Empty;
@@ -16,21 +20,21 @@ namespace API_Proj.Models
         [StringLength(1000)]
         public string? Description { get; set; }
 
-        [Required]
+        [Column(TypeName = "date")]
         public DateTime EventDate { get; set; }
 
         [Required, StringLength(200)]
         public string Location { get; set; } = string.Empty;
 
-        ///Distance in kilometres.
+        [Column(TypeName = "decimal(5,2)")]
         [Range(0.1, 1000)]
-        public double Distance { get; set; }
+        public decimal Distance { get; set; }
 
-        /// Must be Run, Walk or Cycle
         [Required, RegularExpression("^(Run|Walk|Cycle)$",
             ErrorMessage = "EventType must be Run, Walk or Cycle.")]
         public string EventType { get; set; } = string.Empty;
 
+        [StringLength(50)]
         public string? TargetAudience { get; set; }
     }
 }

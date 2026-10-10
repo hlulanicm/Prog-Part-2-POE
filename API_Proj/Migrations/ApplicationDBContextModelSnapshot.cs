@@ -22,6 +22,45 @@ namespace API_Proj.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("API_Proj.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"));
+
+                    b.Property<string>("CategoryType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Category");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal?>("Distance")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<int>("EventID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxParticipants")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("CategoryID");
+
+                    b.HasIndex("EventID");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("API_Proj.Models.Event", b =>
                 {
                     b.Property<int>("EventID")
@@ -30,15 +69,18 @@ namespace API_Proj.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventID"));
 
+                    b.Property<int?>("CategoryID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<double>("Distance")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Distance")
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<DateTime>("EventDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("EventType")
                         .IsRequired()
@@ -58,9 +100,14 @@ namespace API_Proj.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TargetAudience")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("EventID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.HasIndex("OrganiserID");
 
                     b.ToTable("Events");
                 });
@@ -99,6 +146,29 @@ namespace API_Proj.Migrations
                     b.HasKey("UserID");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("API_Proj.Models.Category", b =>
+                {
+                    b.HasOne("API_Proj.Models.Event", null)
+                        .WithMany()
+                        .HasForeignKey("EventID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("API_Proj.Models.Event", b =>
+                {
+                    b.HasOne("API_Proj.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("API_proj.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("OrganiserID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
