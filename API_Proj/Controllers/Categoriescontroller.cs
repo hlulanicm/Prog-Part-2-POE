@@ -7,14 +7,19 @@ using System.Security.Claims;
 namespace API_Proj.Controllers
 
     //Importing all necessarry assets 
-{
-    public class Categoriescontroller : Controller
+
     {
-
-        public IActionResult Index()
+namespace API_proj.Controllers
+    {
+        [ApiController]
+        [Route("api")]
+        [Authorize] // every endpoint requires a logged-in user that is registered
+        public class CategoriesController : ControllerBase
         {
+            private readonly ApplicationDBContext _context;
 
-            return View();
+            public CategoriesController(ApplicationDBContext context)
+            {
+                _context = context; // Assigning context to a context container 
+            }
         }
-    }
-}
