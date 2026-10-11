@@ -27,7 +27,9 @@ namespace API_proj.Controllers
 
            int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            /// Lists the race categories for an event. Available to both roles
+            //GET
+
+            ///GET ROLE:  Lists the race categories for an event. Available to both roles
             [HttpGet("events/{id}/categories")]
 
 
@@ -44,6 +46,10 @@ namespace API_proj.Controllers
                 return categories.Count == 0 ? NotFound("Category not found.") : Ok(categories);
             }
 
+
+
+            ///POST
+            //
             ///Adds a category to an event. Only the Organiser who owns the event can do this.
             [HttpPost("events/{id}/categories")]
             [Authorize(Roles = "Organiser")]
@@ -78,15 +84,19 @@ namespace API_proj.Controllers
 
                 return StatusCode(StatusCodes.Status201Created, category);//return an appropriate status code upon success
 
-                /// Updates a category's details. Only the Organiser who owns the event can update the category details
+                //PUT 
+
+
+                ///PUT ROLE:  Updates a category's details. Only the Organiser who owns the event can update the category details
                
                 [HttpPut("categories/{id}")] //insert the appropriate category id in the API endpoint
                 [Authorize(Roles = "Organiser")]//Assign the user a organiser role
 
                 //Summary of the different response status codes 
-                [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
-                [ProducesResponseType(StatusCodes.Status400BadRequest)]
+             [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+              [ProducesResponseType(StatusCodes.Status400BadRequest)]
                 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+
                 [ProducesResponseType(StatusCodes.Status403Forbidden)]
                 [ProducesResponseType(StatusCodes.Status404NotFound)]
 
@@ -103,15 +113,20 @@ namespace API_proj.Controllers
                     //Container to store the category data 
                     category.CategoryType = dto.CategoryType;
                     category.Description = dto.Description;
-                    category.Name = dto.Name;
-                    category.Distance = dto.Distance;
-                    category.MaxParticipants = dto.MaxParticipants;
+                     category.Name = dto.Name;
+                      category.Distance = dto.Distance;
+                       category.MaxParticipants = dto.MaxParticipants;
 
                     await _context.SaveChangesAsync();
                     return Ok(category);
                 }
 
+                ///DELETE ROLE Removes a category. Only the Organiser who owns the event can do this.</summary>
+                [HttpDelete("categories/{id}")]
+                [Authorize(Roles = "Organiser")]
+          
+              
 
-            }
+    }
 
-        }
+}

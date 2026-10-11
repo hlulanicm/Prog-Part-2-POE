@@ -19,7 +19,7 @@ namespace API_proj.Controllers
             _context = context;
         }
 
-        /// <summary>Registers a new Organiser or Participant account.</summary>
+        /// Registers a new Organiser or Participant account.
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
