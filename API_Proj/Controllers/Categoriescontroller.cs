@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 namespace API_Proj.Controllers
 
-    //Importing all necessarry assets 
+//Importing all necessarry assets 
 
-    {
+{
     namespace API_proj.Controllers
     {
         [ApiController]
@@ -84,54 +84,56 @@ namespace API_Proj.Controllers
                 await _context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status201Created, category);//return an appropriate status code upon success
+            }
 
-                //PUT 
+            //PUT 
 
 
-                ///PUT ROLE:  Updates a category's details. Only the Organiser who owns the event can update the category details
+            ///PUT ROLE:  Updates a category's details. Only the Organiser who owns the event can update the category details
 
-                [HttpPut("categories/{id}")] //insert the appropriate category id in the API endpoint
-                [Authorize(Roles = "Organiser")]//Assign the user a organiser role
+            [HttpPut("categories/{id}")] //insert the appropriate category id in the API endpoint
+            [Authorize(Roles = "Organiser")]//Assign the user a organiser role
 
-                //Summary of the different response status codes 
-                [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
-                [ProducesResponseType(StatusCodes.Status400BadRequest)]
-                [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+            //Summary of the different response status codes 
+            [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+            [ProducesResponseType(StatusCodes.Status400BadRequest)]
+            [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
-                [ProducesResponseType(StatusCodes.Status403Forbidden)]
-                [ProducesResponseType(StatusCodes.Status404NotFound)]
+            [ProducesResponseType(StatusCodes.Status403Forbidden)]
+            [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-                //Assigning the data types that will be collected in the API
-                public async Task<ActionResult<Category>> UpdateCategory(int id, CategoryDto dto)
-                {
-                    var category = await _context.Categories.FindAsync(id);
-                    if (category == null)
-                        return NotFound("Category not found.");//return an appropriate message when the categrory is not found 
+            //Assigning the data types that will be collected in the API
+            public async Task<ActionResult<Category>> UpdateCategory(int id, CategoryDto dto)
+            {
+                var category = await _context.Categories.FindAsync(id);
+                if (category == null)
+                    return NotFound("Category not found.");//return an appropriate message when the categrory is not found 
 
-                    var ev = await _context.Events.FindAsync(category.EventID);
-                    if (ev == null || ev.OrganiserID != CurrentUserId)
-                        return Forbid();
-                    //Container to store the category data 
-                    category.CategoryType = dto.CategoryType;
-                    category.Description = dto.Description;
-                    category.Name = dto.Name;
-                    category.Distance = dto.Distance;
-                    category.MaxParticipants = dto.MaxParticipants;
+                var ev = await _context.Events.FindAsync(category.EventID);
+                if (ev == null || ev.OrganiserID != CurrentUserId)
+                    return Forbid();
+                //Container to store the category data 
+                category.CategoryType = dto.CategoryType;
+                category.Description = dto.Description;
+                category.Name = dto.Name;
+                category.Distance = dto.Distance;
+                category.MaxParticipants = dto.MaxParticipants;
 
-                    await _context.SaveChangesAsync();
-                    return Ok(category);
-                }
+                await _context.SaveChangesAsync();
+                return Ok(category);
+            }
 
-                ///DELETE ROLE Removes a category. Only the Organiser who owns the event can do this.</summary>
-                [HttpDelete("categories/{id}")]
-                [Authorize(Roles = "Organiser")]
-                [ProducesResponseType(StatusCodes.Status204NoContent)]
-                [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+            ///DELETE ROLE Removes a category. Only the Organiser who owns the event can do this.</summary>
+            [HttpDelete("categories/{id}")]
+            [Authorize(Roles = "Organiser")]
+            [ProducesResponseType(StatusCodes.Status204NoContent)]
+            [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
-                [ProducesResponseType(StatusCodes.Status403Forbidden)]
-                [ProducesResponseType(StatusCodes.Status404NotFound)]
-                [ProducesResponseType(StatusCodes.Status409Conflict)]
-
+            [ProducesResponseType(StatusCodes.Status403Forbidden)]
+            [ProducesResponseType(StatusCodes.Status404NotFound)]
+            [ProducesResponseType(StatusCodes.Status409Conflict)]
+            public async Task<IActionResult> DeleteCategory(int id)
+            {
 
                 //A search function that will allow the organiser to delete certain categories  
                 var category = await _context.Categories.FindAsync(id);
@@ -152,6 +154,7 @@ namespace API_Proj.Controllers
                 await _context.SaveChangesAsync();//Save the changes into the database 
                 return NoContent();//Returns 204 No Content,
 
-            } } }
-
+            }
+        }
+    }
 }
