@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System.Security.Claims;
 
 namespace API_proj.Controllers
@@ -18,9 +19,18 @@ namespace API_proj.Controllers
         {
             _context = context;
         }
+        /// <summary>
+        /// THE AUTH ROLE WILL CONTAIN THE POST HTTP METHOD ONLY 
+        /// REASON :
+        /// Auth only has POST because all three of its endpoints send data and change something:
 
-        /// Registers a new Organiser or Participant account.
-        [HttpPost("register")]
+        ///Register creates a new user from the details you send.
+       /// Login checks your credentials and sets the session cookie.
+        ///Logout clears that cookie.
+/// </summary>
+
+///POST METHOD:  Registers a new Organiser or Participant account.
+                [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterDto dto)
@@ -57,7 +67,7 @@ namespace API_proj.Controllers
             });
         }
 
-        /// <summary>Logs in with email and password and sets the session cookie.</summary>
+        //Logs in with email and password and sets the session cookie.
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -67,12 +77,14 @@ namespace API_proj.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                return Unauthorized("Invalid email or password.");
+                return Unauthorized("Invalid email or password.");//if password does not match specifications throw an appropirate error message 
+
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
+
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
