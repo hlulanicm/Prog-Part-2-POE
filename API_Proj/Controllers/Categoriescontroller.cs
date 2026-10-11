@@ -148,7 +148,9 @@ namespace API_Proj.Controllers
                 if (hasEnrollments || usedByEvent) //if any category is uded by the events we will block the delete function
                     return Conflict("This category is in use by enrolments or an event and cannot be deleted.");
 
-           
+                _context.Categories.Remove(category);//remove the category upon successful delete request ,no changes will occur in the database yet
+                await _context.SaveChangesAsync();//Save the changes into the database 
+                return NoContent();
 
             } } }
 
