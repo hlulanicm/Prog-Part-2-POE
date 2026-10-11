@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace API_proj.Controllers
 { [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // every endpoint requires a logged-in user
+    [Authorize] 
     public class EventsController : ControllerBase
     {
      private readonly ApplicationDBContext _context;
@@ -21,7 +21,6 @@ namespace API_proj.Controllers
         private int CurrentUserId =>
             int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        /// <summary>Returns all events. Available to Organisers and Participants.</summary>
    [HttpGet]
       [ProducesResponseType(typeof(List<Event>), StatusCodes.Status200OK)]
 
