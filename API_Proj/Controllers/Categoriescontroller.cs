@@ -142,6 +142,14 @@ namespace API_Proj.Controllers
                 if (ev == null || ev.OrganiserID != CurrentUserId)
                     return Forbid(); //verify organiser ownership if they own the category assigned to the ID 
 
+                //Check RacedayDB
+                var hasEnrollments = await _context.Enrollments.AnyAsync(e => e.CategoryID == id);//check in the RacedayDB if any events reference this category ID
+                var usedByEvent = await _context.Events.AnyAsync(e => e.CategoryID == id);//Check if any events use this category
+                if (hasEnrollments || usedByEvent) //if any category is uded by the events we will block the delete function
+                    return Conflict("This category is in use by enrolments or an event and cannot be deleted.");
+
+           
+
             } } }
 
 }
