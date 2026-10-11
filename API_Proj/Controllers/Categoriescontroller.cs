@@ -9,7 +9,7 @@ namespace API_Proj.Controllers
     //Importing all necessarry assets 
 
     {
-namespace API_proj.Controllers
+    namespace API_proj.Controllers
     {
         [ApiController]
         [Route("api")]
@@ -23,9 +23,9 @@ namespace API_proj.Controllers
                 _context = context; // Assigning context to a context container 
             }
 
-         private int CurrentUserId =>
+            private int CurrentUserId =>
 
-           int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+              int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             //GET
 
@@ -34,8 +34,8 @@ namespace API_proj.Controllers
 
 
             //listing the Types of responses on the API Endpoint can produce  
-            [ProducesResponseType(typeof(List<Category>), StatusCodes.Status200OK)] 
-              [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+            [ProducesResponseType(typeof(List<Category>), StatusCodes.Status200OK)]
+            [ProducesResponseType(StatusCodes.Status401Unauthorized)]
             [ProducesResponseType(StatusCodes.Status404NotFound)]
             public async Task<ActionResult<List<Category>>> GetEventCategories(int id)
             {
@@ -54,7 +54,7 @@ namespace API_proj.Controllers
             [HttpPost("events/{id}/categories")]
             [Authorize(Roles = "Organiser")]
             [ProducesResponseType(typeof(Category), StatusCodes.Status201Created)]
-              [ProducesResponseType(StatusCodes.Status400BadRequest)]
+            [ProducesResponseType(StatusCodes.Status400BadRequest)]
             [ProducesResponseType(StatusCodes.Status401Unauthorized)]
             [ProducesResponseType(StatusCodes.Status403Forbidden)]
             [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,6 +75,7 @@ namespace API_proj.Controllers
                     CategoryType = dto.CategoryType,
                     Description = dto.Description,
                     Name = dto.Name,
+
                     Distance = dto.Distance,
                     MaxParticipants = dto.MaxParticipants
                 };
@@ -88,13 +89,13 @@ namespace API_proj.Controllers
 
 
                 ///PUT ROLE:  Updates a category's details. Only the Organiser who owns the event can update the category details
-               
+
                 [HttpPut("categories/{id}")] //insert the appropriate category id in the API endpoint
                 [Authorize(Roles = "Organiser")]//Assign the user a organiser role
 
                 //Summary of the different response status codes 
-             [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
-              [ProducesResponseType(StatusCodes.Status400BadRequest)]
+                [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+                [ProducesResponseType(StatusCodes.Status400BadRequest)]
                 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
                 [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -113,9 +114,9 @@ namespace API_proj.Controllers
                     //Container to store the category data 
                     category.CategoryType = dto.CategoryType;
                     category.Description = dto.Description;
-                     category.Name = dto.Name;
-                      category.Distance = dto.Distance;
-                       category.MaxParticipants = dto.MaxParticipants;
+                    category.Name = dto.Name;
+                    category.Distance = dto.Distance;
+                    category.MaxParticipants = dto.MaxParticipants;
 
                     await _context.SaveChangesAsync();
                     return Ok(category);
@@ -124,15 +125,23 @@ namespace API_proj.Controllers
                 ///DELETE ROLE Removes a category. Only the Organiser who owns the event can do this.</summary>
                 [HttpDelete("categories/{id}")]
                 [Authorize(Roles = "Organiser")]
-                [ProducesResponseType(StatusCodes.Status204NoContent )]
-                  [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+                [ProducesResponseType(StatusCodes.Status204NoContent)]
+                [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
-                 [ProducesResponseType(StatusCodes.Status403Forbidden )]
-                 [ProducesResponseType(StatusCodes.Status404NotFound)]
-                [ProducesResponseType(StatusCodes.Status409Conflict )]
+                [ProducesResponseType(StatusCodes.Status403Forbidden)]
+                [ProducesResponseType(StatusCodes.Status404NotFound)]
+                [ProducesResponseType(StatusCodes.Status409Conflict)]
 
-              
 
-    }
+                //A search function that will allow the organiser to delete certain categories  
+                var category = await _context.Categories.FindAsync(id);
+                if (category == null)
+                    return NotFound("Category not found.");//if the category is not found display an appropiate message 
+
+                var ev = await _context.Events.FindAsync(category.EventID);
+                if (ev == null || ev.OrganiserID != CurrentUserId)
+                    return Forbid(); //verify organiser ownership if they own the category assigned to the ID 
+
+            } } }
 
 }
