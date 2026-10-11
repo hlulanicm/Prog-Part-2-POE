@@ -124,7 +124,13 @@ namespace API_proj.Controllers
                 ///DELETE ROLE Removes a category. Only the Organiser who owns the event can do this.</summary>
                 [HttpDelete("categories/{id}")]
                 [Authorize(Roles = "Organiser")]
-          
+                [ProducesResponseType(StatusCodes.Status204NoContent )]
+                  [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+
+                 [ProducesResponseType(StatusCodes.Status403Forbidden )]
+                 [ProducesResponseType(StatusCodes.Status404NotFound)]
+                [ProducesResponseType(StatusCodes.Status409Conflict )]
+
               
 
     }
