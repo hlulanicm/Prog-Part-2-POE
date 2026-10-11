@@ -150,7 +150,7 @@ namespace API_Proj.Controllers
 
                 _context.Categories.Remove(category);//remove the category upon successful delete request ,no changes will occur in the database yet
                 await _context.SaveChangesAsync();//Save the changes into the database 
-                return NoContent();
+                return NoContent();//Returns 204 No Content,
 
             } } }
 
